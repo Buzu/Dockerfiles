@@ -31,8 +31,16 @@ RUN set -eux; \
 		libpng-dev \
 		libpq-dev \
 		libzip-dev \
+		imagemagick \
+		ghostscript \
+		libmagickwand-dev \
 	; \
 	\
+
+	pecl install imagick \
+	; \
+	\
+
 	docker-php-ext-configure gd \
 		--with-freetype \
 		--with-jpeg=/usr \
@@ -44,6 +52,11 @@ RUN set -eux; \
 		pdo_mysql \
 		pdo_pgsql \
 		zip \
+	; \
+	\
+
+	docker-php-ext-enable \
+		imagick \
 	; \
 	\
 
@@ -60,16 +73,6 @@ RUN set -eux; \
 	\
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
-
-# set recommended PHP.ini settings
-# see https://secure.php.net/manual/en/opcache.installation.php
-RUN { \
-		echo 'opcache.memory_consumption=128'; \
-		echo 'opcache.interned_strings_buffer=8'; \
-		echo 'opcache.max_accelerated_files=4000'; \
-		echo 'opcache.revalidate_freq=60'; \
-		echo 'opcache.fast_shutdown=1'; \
-	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # Change this if your public files live somewhere else that is not {your_project_root}/web
 ENV APACHE_DOCUMENT_ROOT /var/www/html/web

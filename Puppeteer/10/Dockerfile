@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16
 
 RUN apt-get update \
 	&& apt-get install -y \
@@ -39,6 +39,6 @@ RUN apt-get update \
     lsb-release \
     wget \
     xdg-utils \
-  && groupadd -r pptr && useradd -r -g pptr -G audio,video pptr
+  && groupadd -r pptr && useradd -r -g pptr -G audio,video -m pptr
 
 USER pptr

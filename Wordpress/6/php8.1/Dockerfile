@@ -52,7 +52,7 @@ RUN set -ex; \
   rm -r /tmp/pear; \
   \
 
-# some misbehaving extensions end up outputting to stdout 🙈 (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
+# some misbehaving extensions end up outputting to stdout (https://github.com/docker-library/wordpress/issues/669#issuecomment-993945967)
   out="$(php -r 'exit(0);')"; \
   [ -z "$out" ]; \
   err="$(php -r 'exit(0);' 3>&1 1>&2 2>&3)"; \
@@ -76,6 +76,11 @@ RUN set -ex; \
   rm -rf /var/lib/apt/lists/*; \
   \
   ! { ldd "$extDir"/*.so | grep 'not found'; }; \
+
+# check for output like "PHP Warning:  PHP Startup: Unable to load dynamic library 'foo' (tried: ...)
+  err="$(php --version 3>&1 1>&2 2>&3)"; \
+  [ -z "$err" ]
+
 
 # Error logging has been modified to be more fitted for dev envs.
 RUN { \
